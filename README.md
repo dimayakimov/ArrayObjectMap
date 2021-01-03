@@ -5,6 +5,8 @@
 - Оболочка для ассоциативных массивов
   - Wrapper for associative arrays
 
+  - [Эффективные структуры данных для `PHP 7`, представленные как альтернативы для типа `array`](https://www.php.net/manual/ru/book.ds.php)
+
 ____
 
 ## Requirements

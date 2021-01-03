@@ -104,14 +104,14 @@ foreach ($user->page->users as $name => $value)
 }
 ```
 
-  - Вернёт:
+- Вернёт:
 
 ```
 Dima: dima@example.com
 Vasya: vasya@example.com
 ```
 
-  - Проанализировать построение данных:
+- Проанализировать построение данных:
 
 ``` php
 var__dump($user);

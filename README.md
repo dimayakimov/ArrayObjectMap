@@ -98,8 +98,22 @@ Dima: dima@example.com
 Vasya: vasya@example.com
 ```
 
+- Пример: Получить или удалить
+
+``` php
+$dima = $user->getDima(); // Получить
+$user->unsetDima(); // удалить
+```
+
+- Или так
+
+``` php
+echo $user->dima->email;
+```
+
 - Проанализировать построение данных:
 
 ``` php
 var_dump($user);
 ```
+

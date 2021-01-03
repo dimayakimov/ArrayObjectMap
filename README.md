@@ -31,24 +31,6 @@ require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 - Создайте новый класс наследуемый от класса ArrayObjectMap
 
 ``` php
-class User extends ArrayObjectMap {
-
-    public function set($key, $value)
-    {
-        $this->_changed[] = $key;
-        return parent::set($key, $value);
-    }
-
-    public function load()
-    {
-        return $this;
-    }
-}
-```
-
-## Usage
-
-``` php
 require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 
 class User extends ArrayObjectMap {
@@ -78,7 +60,11 @@ class Page extends ArrayObjectMap {
         return $this;
     }
 }
+```
 
+## Usage
+
+``` php
 $user = new User;
 
 $user->load()

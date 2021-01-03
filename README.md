@@ -1,6 +1,8 @@
 ## ArrayObjectMap
 
 ![https://img.shields.io/badge/PHP-7.4.0-blue](https://img.shields.io/badge/PHP-7.4.0-blue)
+![https://img.shields.io/badge/PHP_Pecl_DS-1.3.0-blue](https://img.shields.io/badge/PHP_Pecl_DS-1.3.0-blue)
+
 
 - Оболочка для ассоциативных массивов
   - Wrapper for associative arrays

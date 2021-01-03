@@ -114,5 +114,5 @@ Vasya: vasya@example.com
 - Проанализировать построение данных:
 
 ``` php
-var__dump($user);
+var_dump($user);
 ```

@@ -77,13 +77,16 @@ $user = new User;
 $user->load()
      ->setDima(['id' => 1, 'email' => 'dima@example.com'])
      ->setVasya(['id' => 2, 'email' => 'vasya@example.com'])
-     ->setPage(
+     ->setPage
+     (
          (new Page)
              ->setTitle('List users')
              ->setDescription('All users site')
              ->setUsers(clone $user)
              ->save()
-     );
+     )
+     ->unsetDima()
+     ->unsetVasya();
 ```
 
 ## Доступ к данным

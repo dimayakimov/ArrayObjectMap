@@ -26,6 +26,7 @@ abstract class ArrayObjectMap extends ArrayObject {
      * @param  string $method
      * @param  array  $args
      * @return mixed
+     * @throw  Exception
      */
     public static function __callStatic($method, array $args = []) /** mixed **/
     {

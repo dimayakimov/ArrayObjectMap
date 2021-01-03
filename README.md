@@ -114,8 +114,8 @@ Vasya: vasya@example.com
 ``` php
 <?php
 
-$dima = $user->page->getDima(); // Получить
-$user->page->unsetDima(); // удалить
+$dima = $user->page->users->getDima(); // Получить
+$user->page->users->unsetDima(); // удалить
 ```
 
 - Или так
@@ -123,7 +123,7 @@ $user->page->unsetDima(); // удалить
 ``` php
 <?php
 
-echo $user->page->dima->email;
+echo $user->page->users->dima->email;
 unset($user->page->users->dima->email); // Удалит ключ email
 ```
 

@@ -71,7 +71,7 @@ $user = new User;
 $user->load()
      ->setDima(['id' => 1, 'email' => 'dima@example.com'])
      ->setVasya(['id' => 2, 'email' => 'vasya@example.com'])
-     ->setpage(
+     ->setPage(
          (new Page)
              ->setTitle('List users')
              ->setDescription('All users site')

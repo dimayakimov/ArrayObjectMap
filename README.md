@@ -93,3 +93,17 @@ $user->load()
      );
 ```
 
+## Доступ к данным
+
+- Пример:
+
+``` php
+foreach ($user->page->users as $name => $value)
+{
+    echo nl2br(ucfirst($name) .': '.$value->email .PHP_EOL, FALSE);
+}
+```
+
+``` php
+var__dump($user);
+```

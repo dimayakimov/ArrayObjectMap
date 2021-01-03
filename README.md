@@ -15,8 +15,8 @@ ____
 
 - PHP `7.2` или выше
   - PHP `7.2` or higher
-  - [Расширение PHP Pecl DS](https://pecl.php.net/package/ds)
-  - [Класс Ds\Map](https://www.php.net/manual/ru/class.ds-map.php)
+  - Расширение PHP Pecl DS
+  - Класс Ds\Map
 
 ## Installation
 

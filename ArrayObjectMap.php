@@ -8,13 +8,13 @@ abstract class ArrayObjectMap extends ArrayObject {
      * @access public
      * @const  string
      */
-    public const PREG_CAMEL_CASE = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/';
+    public const PREG_CAMEL_CASE = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/D';
 
     /**
      * @access public
      * @const  string
      */
-    public const PREG_MATCH_REGEX = '/^(get|set|isset|unset)([\w]+)$/';
+    public const PREG_MATCH_REGEX = '/^(get|set|isset|unset)([\w]+)$/D';
 
 
     /**

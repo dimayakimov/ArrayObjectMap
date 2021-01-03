@@ -1,7 +1,6 @@
 <?php
 
-
-abstract class ArrayObjectMap extends ArrayObject {
+abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
@@ -70,17 +69,22 @@ abstract class ArrayObjectMap extends ArrayObject {
      * @todo Constructor
      *
      * @access public
+     * @link https://www.php.net/manual/ru/language.types.iterable.php
      * @param  iterable $iterable
      * @return no type
+     * @throw  TypeError
      */
     public function __construct(iterable $iterable = []) /** no type **/
     {
          /**
           * @link https://www.php.net/manual/ru/class.ds-map.php
           */
-        $this->_map = new \Ds\Map;
-        $this->to_object($iterable);
-        // parent::__construct($this->_map, ArrayObject::ARRAY_AS_PROPS, 'ArrayIterator');
+         $this->_map = new \Ds\Map($iterable);
+
+         foreach ($iterable as $key => $value)
+         {
+             $this->__set($key, $value);
+         }
     }
 
 
@@ -106,7 +110,7 @@ abstract class ArrayObjectMap extends ArrayObject {
      */
     public function __toString(): string
     {
-        return serialize($this->_map);
+        return serialize($this);
     }
 
 
@@ -171,7 +175,7 @@ abstract class ArrayObjectMap extends ArrayObject {
      * @param  string|integer $key
      * @return mixed
      */
-    public function __get($key) /** mixed **/
+    public function & __get($key) /** mixed **/
     {
         return $this->_map
                      ->get($key, NULL);
@@ -189,7 +193,24 @@ abstract class ArrayObjectMap extends ArrayObject {
      */
     public function __set($key = NULL, $value = NULL)
     {
-        $this->to_object([$key => $value]);
+        $value = (is_array($value))
+            ? new static($value)
+            : $value;
+
+        if ($key === NULL)
+           $this->_map
+                ->putAll([$value]);
+        elseif ($value !== NULL)
+        {
+           if ( ! in_array($key, $this->_changed))
+           {
+              $this->_changed[] = $key;
+           }
+
+           $this->_map
+                ->put($key, $value);
+        }
+
         return $this;
     }
 
@@ -243,16 +264,17 @@ abstract class ArrayObjectMap extends ArrayObject {
 
 
     /**
-     * @link https://www.php.net/manual/ru/arrayobject.getiterator.php
-     * @todo Iterator
+     * @link https://www.php.net/manual/ru/class.iteratoraggregate.php
+     * @todo IteratorAggregate
      *
      * @access public
      * @return object ArrayIterator
      */
     public function getIterator(): ArrayIterator
     {
-        return new ArrayIterator($this->_map
-                                       ->toArray()
+        return new ArrayIterator
+        (
+            $this->_map->toArray()
         );
     }
 
@@ -263,7 +285,7 @@ abstract class ArrayObjectMap extends ArrayObject {
      *
      * @access public
      */
-    public function offsetGet($offset) {
+    public function & offsetGet($offset) {
         return $this->__get($offset);
     }
     public function offsetSet($offset, $value = NULL) {
@@ -280,7 +302,7 @@ abstract class ArrayObjectMap extends ArrayObject {
     /**
      * @access public
      */
-    public function get($key) {
+    public function & get($key) {
         return $this->__get($key);
     }
     public function set($key, $value) {
@@ -296,55 +318,82 @@ abstract class ArrayObjectMap extends ArrayObject {
 
     /**
      * @access public
+     * @param  array $array
      * @return array
      */
-    public function array(): array
-    {
-        return $this->to_array();
-    }
-
-
-    /**
-     * @final
-     * @access public
-     * @param  iterable $iterable
-     * @return void
-     */
-    final public function to_object(iterable $iterable = []): void
-    {
-        foreach ($iterable as $key => $value)
-        {
-            $value = (is_array($value))
-                    ? new static($value)
-                    : $value;
-
-            $this->_map->putAll([$key => $value]);
-        }
-    }
-
-
-    /**
-     * @final
-     * @access public
-     * @param  iterable $iterable
-     * @return array
-     */
-    final public function to_array(iterable $iterable = []): array
+    public function array(array $array = []): array
     {
         foreach ($this->_map as $key => $value)
         {
-            // Can’t be converted to an array when objects are used as keys.
-            if ( ! is_object($key))
-            {
-               $iterable[$key] = ($value instanceof static)
-                   ? $value->to_array()
-                   : ($value instanceof \Ds\Map
-                         ? $value->toArray()
-                         : $value);
-            }
+           $array[$key] = ($value instanceof static)
+               ? $value->array()
+               : $value;
         }
 
-        return $iterable;
+        return $array;
+    }
+
+
+    /**
+     * @access public
+     * @param  mixed $mixed
+     * @return self
+     */
+    public function default($mixed = []): self
+    {
+        $mixed = $this->array_merge_recursive
+        (
+            (is_array($mixed)
+                ? $mixed
+                : ($mixed instanceof static
+                      ? $mixed->array()
+                      : ($mixed instanceof ArrayObject
+                            ? $mixed->getArrayCopy()
+                            : (array) $mixed
+                        )
+                  )
+            ),
+            $this->array()
+        );
+
+        foreach ($mixed as $key => $value)
+        {
+            $this->__set($key, $value);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @access public
+     * @param  mixed $mixed
+     * @return self
+     */
+    public function merge($mixed = []): self
+    {
+        $mixed = $this->array_merge_recursive
+        (
+            $this->array(),
+
+            (is_array($mixed)
+                ? $mixed
+                : ($mixed instanceof static
+                      ? $mixed->array()
+                      : ($mixed instanceof ArrayObject
+                            ? $mixed->getArrayCopy()
+                            : (array) $mixed
+                        )
+                  )
+            )
+        );
+
+        foreach ($mixed as $key => $value)
+        {
+            $this->__set($key, $value);
+        }
+
+        return $this;
     }
 
 
@@ -375,6 +424,41 @@ abstract class ArrayObjectMap extends ArrayObject {
        );
 
        return count($matches) > 1;
+    }
+
+
+    /**
+     * @link https://www.php.net/manual/ru/function.array-merge-recursive.php
+     *
+     * @package   Kohana
+     * @category  Helpers
+     * @author    Kohana Team
+     * @copyright (c) 2007-2012 Kohana Team
+     * @license   http://kohanaframework.org/license
+     *
+     * @access public
+     * @param  array $array1 initial array
+     * @param  array $array2 array to merge
+     * @return array
+     */
+    public function array_merge_recursive(array $array1, array $array2): array
+    {
+        if (array_keys(($_ = array_keys($array2))) !== $_) // is_assoc
+        {
+           foreach ($array2 as $key => $value)
+               $array1[$key] = (is_array($value) && isset($array1[$key]) && is_array($array1[$key]))
+                   ? $this->array_merge_recursive($array1[$key], $value)
+                   : $value;
+        }
+        else
+        {
+            foreach ($array2 as $value)
+            {
+                if ( ! in_array($value, $array1, TRUE))
+                   $array1[] = $value;
+            }
+        }
+        return $array1;
     }
 
 

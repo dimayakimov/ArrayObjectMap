@@ -187,7 +187,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @todo Magic Method __set()
      *
      * @access public
-     * @param  string|integer $key
+     * @param  string|integer|object $key
      * @param  mixed $value
      * @return void
      */

@@ -25,6 +25,7 @@ ____
 
 ``` php
 <?php
+
 require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 ```
 
@@ -34,6 +35,7 @@ require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 
 ``` php
 <?php
+
 require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 
 class User extends ArrayObjectMap {
@@ -69,6 +71,7 @@ class Page extends ArrayObjectMap {
 
 ``` php
 <?php
+
 $user = new User;
 
 $user->load()
@@ -89,6 +92,7 @@ $user->load()
 
 ``` php
 <?php
+
 foreach ($user->page->users as $name => $value)
 {
     echo nl2br(ucfirst($name) .': '.$value->email .PHP_EOL, FALSE);
@@ -106,6 +110,7 @@ Vasya: vasya@example.com
 
 ``` php
 <?php
+
 $dima = $user->getDima(); // Получить
 $user->unsetDima(); // удалить
 ```
@@ -114,12 +119,15 @@ $user->unsetDima(); // удалить
 
 ``` php
 <?php
+
 echo $user->dima->email;
 ```
 
 - Проанализировать построение данных:
 
 ``` php
+<?php
+
 var_dump($user);
 ```
 

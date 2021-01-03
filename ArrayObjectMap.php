@@ -1,5 +1,32 @@
 <?php
-
+ /**
+  * @todo Methods
+  *
+  * @uses __callStatic
+  * @uses __construct
+  * @uses __clone
+  * @uses __toString
+  * @uses __call
+  * @uses __get
+  * @uses __set
+  * @uses __isset
+  * @uses __unset
+  * @uses get
+  * @uses set
+  * @uses isset
+  * @uses unset
+  * @uses offsetGet
+  * @uses offsetSet
+  * @uses offsetExists
+  * @uses offsetUnset
+  * @uses getIterator
+  * @uses array
+  * @uses default
+  * @uses merge
+  * @uses load
+  * @uses preg_match_callback
+  * @uses array_merge_recursive
+  */
 abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
@@ -25,7 +52,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @param  string $method
      * @param  array  $args
      * @return mixed
-     * @throw  Exception
+     * @throws Exception
      */
     public static function __callStatic($method, array $args = []) /** mixed **/
     {
@@ -72,7 +99,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @link https://www.php.net/manual/ru/language.types.iterable.php
      * @param  iterable $iterable
      * @return no type
-     * @throw  TypeError
+     * @throws TypeError
      */
     public function __construct(iterable $iterable = []) /** no type **/
     {
@@ -122,7 +149,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @param  string $method
      * @param  array  $args
      * @return mixed
-     * @throw  OutOfBoundsException
+     * @throws OutOfBoundsException
      */
     public function __call($method, array $args = []) /** mixed **/
     {
@@ -398,6 +425,25 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
+     * @access public
+     * @param  array|string  $paths
+     * @return self
+     */
+    public function load($input = []): self
+    {
+        if ($input)
+        {
+           foreach ((array) $input as $value)
+           {
+               $this->merge((array) require $value);
+           }
+        }
+
+        return $this;
+    }
+
+
+    /**
      * @link https://www.php.net/manual/ru/function.preg-replace-callback.php
      * @todo preg_match_callback()
      *
@@ -466,13 +512,12 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @link https://www.php.net/manual/ru/language.oop5.abstract.php
      * @todo Abstraction
      *
+     * @static
      * @access public
+     * @param  iterable $iterable
+     * @return object singleton
      */
-    //abstract public function load();
-    //abstract public function create();
-    //abstract public function save();
-    //abstract public function unload();
-    //abstract public function remove();
+    // abstract public static function instance(iterable $iterable = []): self;
 }
 
 

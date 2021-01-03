@@ -14,7 +14,6 @@ ____
 ## Requirements
 
 - PHP `7.2` или выше
-  - PHP `7.2` or higher
   - Расширение PHP Pecl DS
   - Класс Ds\Map
 

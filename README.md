@@ -24,6 +24,7 @@ ____
 
 
 ``` php
+<?php
 require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 ```
 
@@ -32,6 +33,7 @@ require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 - Создайте новый класс наследуемый от класса ArrayObjectMap
 
 ``` php
+<?php
 require __DIR__ . '/path/to/library/ArrayObjectMap.php';
 
 class User extends ArrayObjectMap {
@@ -66,6 +68,7 @@ class Page extends ArrayObjectMap {
 ## Usage
 
 ``` php
+<?php
 $user = new User;
 
 $user->load()
@@ -85,6 +88,7 @@ $user->load()
 - Пример:
 
 ``` php
+<?php
 foreach ($user->page->users as $name => $value)
 {
     echo nl2br(ucfirst($name) .': '.$value->email .PHP_EOL, FALSE);
@@ -101,6 +105,7 @@ Vasya: vasya@example.com
 - Пример: Получить или удалить
 
 ``` php
+<?php
 $dima = $user->getDima(); // Получить
 $user->unsetDima(); // удалить
 ```
@@ -108,6 +113,7 @@ $user->unsetDima(); // удалить
 - Или так
 
 ``` php
+<?php
 echo $user->dima->email;
 ```
 

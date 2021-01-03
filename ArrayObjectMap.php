@@ -46,8 +46,6 @@ abstract class ArrayObjectMap extends ArrayObject {
                 $e->getMessage() .' Line: ' .$e->getLine() .' File: &#8230;/' .basename($e->getFile()) .PHP_EOL
                 , FALSE
             );
-
-            return NULL;
         }
 
         return NULL;

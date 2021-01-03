@@ -121,6 +121,7 @@ $user->unsetDima(); // удалить
 <?php
 
 echo $user->dima->email;
+unset($user->page->users->dima->email); // Удалит ключ email
 ```
 
 - Проанализировать построение данных:

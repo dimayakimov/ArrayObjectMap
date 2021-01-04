@@ -1,5 +1,5 @@
 <?php
- /**
+  /**
   * @todo Methods
   *
   * @uses __callStatic
@@ -34,13 +34,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @access public
      * @const  string
      */
-    public const PREG_CAMEL_CASE = '/(?<=[A-Z])(?=[A-Z][a-z])|(?<=[^A-Z])(?=[A-Z])|(?<=[A-Za-z])(?=[^A-Za-z])/D';
-
-    /**
-     * @access public
-     * @const  string
-     */
-    public const PREG_MATCH_REGEX = '/^(get|set|isset|unset)([\w]+)$/D';
+    public const PREG_MATCH_REGEX = '/^(get|set|isset|unset)([\w]+)$/iD';
 
 
     /**
@@ -167,16 +161,25 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
             }
             else
             {
-               $key = strtolower(
-                   preg_replace(self::PREG_CAMEL_CASE, '_$0', $matches[2])
-               );
+               $property = strtolower($matches[2]);
 
                switch($matches[1]):
-                   case 'get'  : return $this->get($key);
-                   case 'set'  : return $this->set($key, $args[0] ?? NULL);
-                   case 'isset': return $this->isset($key);
-                   case 'unset': return $this->unset($key);
-                   default     : break;
+                   case 'get'  : return $this->get($property);
+                   case 'set'  : return $this->set($property, $args[0] ?? NULL);
+                   case 'isset': return $this->isset($property);
+                   case 'unset':
+                   {
+                      if ($this->isset($property))
+                         return $this->unset([$property, $args[0] ?? FALSE]);
+                      else
+                      {
+                         throw new OutOfBoundsException(
+                             'Property: &#171;' .get_called_class() .':: &#36;this&#8211;&#62;' .$property .'&#187; was not found.'
+                         );
+                      }
+                      return NULL;
+                   }
+                   default : break;
                endswitch;
             }
         }
@@ -261,12 +264,22 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @link https://www.php.net/manual/ru/language.oop5.overloading.php#object.unset
      * @todo Magic Method __unset()
      *
+     * @example $charset = $this->unsetTz()     // remove key `tz`
+     *                          ->unsetLocale() // remove key `locale`
+     *                          ->setLang('en') // set key `lang`
+     *                          ->getCharset(); // and return value `charset`
+     *
+     * @example echo $this->unsetCharset(TRUE); // remove key `charset` and return value `charset`
+     *
      * @access public
      * @param  string|integer $key
-     * @return void
+     * @return mixed
      */
-    public function __unset($key = NULL)
+    public function __unset($array)
     {
+        // To avoid warning-> Notice: Undefined offset: 1
+        list($key, $is_return) = (array) $array;
+
         if ($key === NULL)
         {
            $this->_changed = [];
@@ -281,12 +294,13 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
               unset($this->_changed[$search_key]);
            }
 
-           ! $this->__isset($key)
-               || $this->_map
-                       ->remove($key);
+           $return = $this->_map
+                          ->remove($key);
         }
 
-        return $this;
+        return ($is_return)
+            ? $return
+            : $this;
     }
 
 
@@ -337,8 +351,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
     }
     public function isset($key): bool {
         return $this->__isset($key);
-    }
-    public function unset($key = NULL) {
+    } public function unset($key = NULL) {
         return $this->__unset($key);
     }
 

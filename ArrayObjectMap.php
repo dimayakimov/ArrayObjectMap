@@ -31,10 +31,10 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
-     * @access public
+     * @access protected
      * @const  string
      */
-    public const PREG_MATCH_REGEX = '/^(get|set|isset|unset)([\w]+)$/iD';
+    protected const PREG_MATCH_REGEX = '/^(get|set|isset|unset)([\w]+)$/iD';
 
 
     /**

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
    /**
   * @todo Methods
   *
@@ -105,7 +105,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @access protected
      * @var    object \Ds\Map
      */
-    protected $_map;
+    protected ?\Ds\Map $_map;
 
     /**
      * @access protected

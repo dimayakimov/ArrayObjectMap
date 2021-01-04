@@ -38,6 +38,18 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
+     * @link https://www.php.net/manual/ru/language.oop5.abstract.php
+     * @todo Abstraction
+     *
+     * @static
+     * @access public
+     * @param  iterable $iterable
+     * @return object singleton
+     */
+    // abstract public static function instance(iterable $iterable = []): self;
+
+
+    /**
      * @link https://www.php.net/manual/ru/language.oop5.overloading.php#object.callstatic
      * @todo Magic Method __callStatic()
      *
@@ -561,18 +573,6 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
         }
         return $array;
     }
-
-
-    /**
-     * @link https://www.php.net/manual/ru/language.oop5.abstract.php
-     * @todo Abstraction
-     *
-     * @static
-     * @access public
-     * @param  iterable $iterable
-     * @return object singleton
-     */
-    // abstract public static function instance(iterable $iterable = []): self;
 }
 
 

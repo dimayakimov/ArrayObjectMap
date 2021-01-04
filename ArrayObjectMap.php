@@ -41,6 +41,23 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @link https://www.php.net/manual/ru/language.oop5.abstract.php
      * @todo Abstraction
      *
+     * @example
+     *      // @static
+     *      // @access public
+     *      // @param  iterable $iterable
+     *      // @return object singleton
+     *     class Config extends ArrayObjectMap {
+     *
+     *         public static function instance(iterable $iterable = []): self
+     *         {
+     *             // @staticvar object singleton
+     *             static $singelton;
+     *             return ( ! $singelton)
+     *                 ? ($singelton = new static($iterable))
+     *                 : $singelton;
+     *         }
+     *     }
+     *
      * @static
      * @access public
      * @param  iterable $iterable

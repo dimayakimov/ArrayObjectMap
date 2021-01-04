@@ -328,14 +328,11 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      */
     public function & offsetGet($offset) {
         return $this->__get($offset);
-    }
-    public function offsetSet($offset, $value = NULL) {
+    } public function offsetSet($offset, $value = NULL) {
         return $this->__set($offset, $value);
-    }
-    public function offsetExists($offset): bool {
+    } public function offsetExists($offset): bool {
         return $this->__isset($offset);
-    }
-    public function offsetUnset($offset = NULL) {
+    } public function offsetUnset($offset = NULL) {
         return $this->__unset($offset);
     }
 

@@ -325,12 +325,12 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
               unset($this->_changed[$found]);
            }
 
-           $return = $this->_map
+           $value = $this->_map
                           ->remove($key);
         }
 
         return ($is_return)
-            ? $return
+            ? $value
             : $this;
     }
 

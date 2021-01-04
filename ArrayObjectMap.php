@@ -345,11 +345,9 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      */
     public function & get($key) {
         return $this->__get($key);
-    }
-    public function set($key, $value) {
+    } public function set($key, $value) {
         return $this->__set($key, $value);
-    }
-    public function isset($key): bool {
+    } public function isset($key): bool {
         return $this->__isset($key);
     } public function unset($key = NULL) {
         return $this->__unset($key);

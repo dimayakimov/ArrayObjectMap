@@ -1,5 +1,5 @@
 <?php
-  /**
+   /**
   * @todo Methods
   *
   * @uses __callStatic
@@ -48,7 +48,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @return mixed
      * @throws Exception
      */
-    public static function __callStatic($method, array $args = []) /** mixed **/
+    public static function __callStatic($method, $args = []) /** mixed **/
     {
         try
         {
@@ -145,7 +145,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @return mixed
      * @throws OutOfBoundsException
      */
-    public function __call($method, array $args = []) /** mixed **/
+    public function __call($method, $args = []) /** mixed **/
     {
         try
         {
@@ -221,7 +221,7 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @param  mixed $value
      * @return void
      */
-    public function __set($key = NULL, $value = NULL)
+    public function __set($key = NULL, $value = NULL) /** mixed **/
     {
         $value = (is_array($value))
             ? new static($value)
@@ -264,18 +264,20 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @link https://www.php.net/manual/ru/language.oop5.overloading.php#object.unset
      * @todo Magic Method __unset()
      *
-     * @example $charset = $this->unsetTz()     // remove key `tz`
-     *                          ->unsetLocale() // remove key `locale`
-     *                          ->setLang('en') // set key `lang`
-     *                          ->getCharset(); // and return value `charset`
+     * @example
+     *     $charset = $this->unsetTz()     // remove key `tz`
+     *                     ->unsetLocale() // remove key `locale`
+     *                     ->setLang('en') // set key `lang`
+     *                     ->getCharset(); // and return value `charset`
      *
-     * @example echo $this->unsetCharset(TRUE); // remove key `charset` and return value `charset`
+     * @example
+     *     echo $this->unsetCharset(TRUE); // remove key `charset` and return value `charset`
      *
      * @access public
      * @param  string|integer $key
-     * @return mixed
+     * @return void
      */
-    public function __unset($array)
+    public function __unset($array) /** mixed **/
     {
         // To avoid warning-> Notice: Undefined offset: 1
         list($key, $is_return) = (array) $array;
@@ -288,10 +290,10 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
         }
         else
         {
-           $search_key = array_search($key, $this->_changed);
-           if ($search_key !== FALSE)
+           $found = array_search($key, $this->_changed);
+           if ($found !== FALSE)
            {
-              unset($this->_changed[$search_key]);
+              unset($this->_changed[$found]);
            }
 
            $return = $this->_map
@@ -370,28 +372,47 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
+     * @example
+     *    $config = new Config(
+     *        [ 'one' => 1, 'two' => ['three' => '3 ya'] ]
+     *    );
+     *
+     *    $config->default(
+     *        ['one' => 7, 'two' => 2, 'three' => 3]
+     *    );
+     *
+     *    var_dump array(3)
+     *    {
+     *        ["one"] => 1
+     *        ["two"] => array(1)
+     *        {
+     *            ["three"] => "3 ya"
+     *        }
+     *        ["three"] => 3
+     *    }
+     *
      * @access public
-     * @param  mixed $mixed
+     * @param  iterable|string $merge
      * @return self
      */
-    public function default($mixed = []): self
+    public function default($merge = []): self
     {
-        $mixed = $this->array_merge_recursive
+        $merge = $this->array_merge_recursive
         (
-            (is_array($mixed)
-                ? $mixed
-                : ($mixed instanceof static
-                      ? $mixed->array()
-                      : ($mixed instanceof ArrayObject
-                            ? $mixed->getArrayCopy()
-                            : (array) $mixed
+            (is_array($merge)
+                ? $merge
+                : ($merge instanceof static
+                      ? $merge->array()
+                      : ($merge instanceof ArrayObject
+                            ? $merge->getArrayCopy()
+                            : (array) $merge
                         )
                   )
             ),
             $this->array()
         );
 
-        foreach ($mixed as $key => $value)
+        foreach ($merge as $key => $value)
         {
             $this->__set($key, $value);
         }
@@ -401,29 +422,45 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
+     * @example
+     *    $config = new Config(
+     *        [ 'one' => 1, 'two' => ['three' => '3 ya'] ]
+     *    );
+     *
+     *    $config->default(
+     *        ['one' => 7, 'two' => 2, 'three' => 3]
+     *    );
+     *
+     *    var_dump array(3)
+     *    {
+     *        ["one"] => 7
+     *        ["two"] => 2
+     *        ["three"] => 3
+     *    }
+     *
      * @access public
-     * @param  mixed $mixed
+     * @param  iterable|string $merge
      * @return self
      */
-    public function merge($mixed = []): self
+    public function merge($merge = []): self
     {
-        $mixed = $this->array_merge_recursive
+        $merge = $this->array_merge_recursive
         (
             $this->array(),
 
-            (is_array($mixed)
-                ? $mixed
-                : ($mixed instanceof static
-                      ? $mixed->array()
-                      : ($mixed instanceof ArrayObject
-                            ? $mixed->getArrayCopy()
-                            : (array) $mixed
+            (is_array($merge)
+                ? $merge
+                : ($merge instanceof static
+                      ? $merge->array()
+                      : ($merge instanceof ArrayObject
+                            ? $merge->getArrayCopy()
+                            : (array) $merge
                         )
                   )
             )
         );
 
-        foreach ($mixed as $key => $value)
+        foreach ($merge as $key => $value)
         {
             $this->__set($key, $value);
         }
@@ -433,17 +470,27 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
 
 
     /**
+     * @example
+     *     $config = (new Config)->load('/var/path/config.php');
+     *
+     *     $config->load(
+     *         [
+     *             '/var/path/config.php',
+     *             '/var/path2/config_merge.php'
+     *         ]
+     *     );
+     *
      * @access public
      * @param  array|string  $paths
      * @return self
      */
-    public function load($input = []): self
+    public function load($load = []): self
     {
-        if ($input)
+        if ($load)
         {
-           foreach ((array) $input as $value)
+           foreach ((array) $load as $path)
            {
-               $this->merge((array) require $value);
+               $this->merge((array) require $path);
            }
         }
 
@@ -491,28 +538,28 @@ abstract class ArrayObjectMap implements ArrayAccess, IteratorAggregate {
      * @license   http://kohanaframework.org/license
      *
      * @access public
-     * @param  array $array1 initial array
-     * @param  array $array2 array to merge
+     * @param  array $array initial array
+     * @param  array $merge array to merge
      * @return array
      */
-    public function array_merge_recursive(array $array1, array $array2): array
+    public function array_merge_recursive(array $array, array $merge): array
     {
-        if (array_keys(($_ = array_keys($array2))) !== $_) // is_assoc
+        if (array_keys(($_ = array_keys($merge))) !== $_) // is_assoc
         {
-           foreach ($array2 as $key => $value)
-               $array1[$key] = (is_array($value) && isset($array1[$key]) && is_array($array1[$key]))
-                   ? $this->array_merge_recursive($array1[$key], $value)
+           foreach ($merge as $key => $value)
+               $array[$key] = (is_array($value) && isset($array[$key]) && is_array($array[$key]))
+                   ? $this->array_merge_recursive($array[$key], $value)
                    : $value;
         }
         else
         {
-            foreach ($array2 as $value)
+            foreach ($merge as $value)
             {
-                if ( ! in_array($value, $array1, TRUE))
-                   $array1[] = $value;
+                if ( ! in_array($value, $array, TRUE))
+                   $array[] = $value;
             }
         }
-        return $array1;
+        return $array;
     }
 
 
